@@ -1,3 +1,6 @@
+#tablas
+tablas/*.txt
+
 # Logs
 logs
 *.log
