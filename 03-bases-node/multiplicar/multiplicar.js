@@ -18,7 +18,6 @@ let crearArchivoTabla = (base, limite = 10) => {
         }
 
         const data = new Uint8Array(Buffer.from(tabla));
-
         fs.writeFile(nombreArchivo, data, (err) => {
             if (err) reject(err);
             return resolve(nombreArchivoColor);
