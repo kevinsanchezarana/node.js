@@ -6,6 +6,7 @@ const argv = require('yargs')
             demand: true
         }
     })
+    .example('node app --direccion="Vega de San Mateo"')
     .epilog('copyright 2020')
     .help('help')
     .argv;
