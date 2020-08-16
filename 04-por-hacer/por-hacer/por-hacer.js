@@ -45,9 +45,7 @@ const getListado = () => {
 
 const actualizar = (descripcion, completada = true) => {
     cargarDB();
-    let index = listadoPorHacer.findIndex(tarea => {
-        return tarea.descripcion === descripcion;
-    });
+    let index = listadoPorHacer.findIndex(tarea => tarea.descripcion === descripcion);
     if (index >= 0) {
         listadoPorHacer[index].completada = completada;
         guardarDB();
@@ -58,11 +56,7 @@ const actualizar = (descripcion, completada = true) => {
 
 const borrar = descripcion => {
     cargarDB();
-
-    nuevoListadoPorHacer = listadoPorHacer.filter(tarea => {
-        return tarea.descripcion !== descripcion;
-    });
-
+    nuevoListadoPorHacer = listadoPorHacer.filter(tarea => tarea.descripcion !== descripcion);
     if (listadoPorHacer.length !== nuevoListadoPorHacer.length) {
         listadoPorHacer = nuevoListadoPorHacer;
         guardarDB();
