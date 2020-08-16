@@ -38,8 +38,11 @@ const crear = descripcion => {
 
 }
 
-const getListado = () => {
+const getListado = (completada = false) => {
     cargarDB();
+    if (completada) {
+        listadoPorHacer = listadoPorHacer.filter(tarea => tarea.completada === completada);
+    }
     return listadoPorHacer;
 }
 
