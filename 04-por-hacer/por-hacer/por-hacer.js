@@ -14,11 +14,21 @@ const guardarDB = () => {
 
 }
 
+const cargarDB = () => {
+    try {
+        listadoPorHacer = require('../db/data.json');
+    } catch (error) {
+        listadoPorHacer = [];
+    }
+}
+
 const crear = descripcion => {
+
+    cargarDB();
 
     let porHacer = {
         descripcion,
-        completado: false
+        completada: false
     };
 
     listadoPorHacer.push(porHacer);
@@ -28,6 +38,42 @@ const crear = descripcion => {
 
 }
 
+const getListado = () => {
+    cargarDB();
+    return listadoPorHacer;
+}
+
+const actualizar = (descripcion, completada = true) => {
+    cargarDB();
+    let index = listadoPorHacer.findIndex(tarea => {
+        return tarea.descripcion === descripcion;
+    });
+    if (index >= 0) {
+        listadoPorHacer[index].completada = completada;
+        guardarDB();
+        return true;
+    }
+    return false;
+}
+
+const borrar = descripcion => {
+    cargarDB();
+
+    nuevoListadoPorHacer = listadoPorHacer.filter(tarea => {
+        return tarea.descripcion !== descripcion;
+    });
+
+    if (listadoPorHacer.length !== nuevoListadoPorHacer.length) {
+        listadoPorHacer = nuevoListadoPorHacer;
+        guardarDB();
+        return true;
+    }
+    return false;
+}
+
 module.exports = {
-    crear
+    crear,
+    getListado,
+    actualizar,
+    borrar
 }
