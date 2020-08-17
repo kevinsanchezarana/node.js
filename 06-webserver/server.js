@@ -5,14 +5,15 @@ const app = express();
 //Cualquier recurso que este bajo esta ruta puede ser accedido desde el navegador
 app.use(express.static(__dirname + '/public'));
 
-// app.get('/', (req, res) => {
-//     let salida = {
-//         nombre: 'Kevin',
-//         edad: 27,
-//         url: '/'
-//     }
-//     res.send(salida);
-// });
+//Express hbs, motor de plantillas
+app.set('view engine', 'hbs');
+
+app.get('/', (req, res) => {
+    res.render('home', {
+        nombre: 'Kevin',
+        anyo: new Date().getFullYear()
+    });
+});
 
 app.listen(8080, () => {
     console.log('Escuchando peticiones en el puerto 8080....');
