@@ -8,33 +8,36 @@ io.on('connection', (client) => {
 
     client.on('entrarChat', (data, callback) => {
 
-        const { nombre } = data;
+        const { nombre, sala } = data;
         const { id } = client;
-        if (!nombre) {
+        if (!nombre || !sala ) {
             return callback({
                 error: true,
-                mensaje: "El nombre del usuario es necesario"
+                mensaje: "El nombre y sala del usuario son necesarios"
             });
         }
 
-        const personas = usuarios.agregarPersona(id, nombre);
+        //Une a un cliente a una sala especifica para que envíe mensajes a esa sala
+        client.join(sala);
 
-        client.broadcast.emit('listaPersona', usuarios.getPersonas());
+        usuarios.agregarPersona(id, nombre, sala);
 
-        callback(personas);
+        client.broadcast.to(sala).emit('listaPersona', usuarios.getPersonasPorSala(sala));
+
+        callback(usuarios.getPersonasPorSala(sala));
 
     });
 
     client.on('crearMensaje', data => {
         const persona = usuarios.getPersona(client.id);
         const mensaje = crearMensaje(persona.nombre, data.mensaje);
-        client.broadcast.emit('crearMensaje', mensaje);
+        client.broadcast.to(persona.sala).emit('crearMensaje', mensaje);
     });
 
     client.on('disconnect', () => {
         const personaBorrada = usuarios.borrarPersona(client.id);
-        client.broadcast.emit('crearMensaje', crearMensaje('Administrador', `${personaBorrada.nombre} salió`));
-        client.broadcast.emit('listaPersona', usuarios.getPersonas());
+        client.broadcast.to(personaBorrada.sala).emit('crearMensaje', crearMensaje('Administrador', `${personaBorrada.nombre} salió`));
+        client.broadcast.to(personaBorrada.sala).emit('listaPersona', usuarios.getPersonasPorSala(personaBorrada.sala));
     });
 
 
