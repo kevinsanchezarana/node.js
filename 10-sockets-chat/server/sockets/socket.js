@@ -10,7 +10,7 @@ io.on('connection', (client) => {
 
         const { nombre, sala } = data;
         const { id } = client;
-        if (!nombre || !sala ) {
+        if (!nombre || !sala) {
             return callback({
                 error: true,
                 mensaje: "El nombre y sala del usuario son necesarios"
@@ -24,14 +24,17 @@ io.on('connection', (client) => {
 
         client.broadcast.to(sala).emit('listaPersona', usuarios.getPersonasPorSala(sala));
 
+        client.broadcast.to(sala).emit('crearMensaje', crearMensaje('Administrador', `${nombre} se unió`));
         callback(usuarios.getPersonasPorSala(sala));
 
     });
 
-    client.on('crearMensaje', data => {
+    client.on('crearMensaje', (data, callback) => {
         const persona = usuarios.getPersona(client.id);
         const mensaje = crearMensaje(persona.nombre, data.mensaje);
         client.broadcast.to(persona.sala).emit('crearMensaje', mensaje);
+
+        callback(mensaje);
     });
 
     client.on('disconnect', () => {
